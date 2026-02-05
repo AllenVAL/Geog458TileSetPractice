@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GEOG 458 Lab 4</title>
+
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+<style>
+body{margin:0}
+#map{position:absolute;inset:0}
+
+#header{
+  position:absolute;
+  top:12px;
+  left:12px;
+  background:#fff;
+  padding:10px 14px;
+  border-radius:6px;
+  max-width:320px;
+  font:14px/1.4 Arial;
+  box-shadow:0 2px 10px rgba(0,0,0,.15);
+  z-index:1;
+}
+
+#header h1{
+  margin:0 0 6px 0;
+  font-size:16px;
+}
+
+#sw{
+  position:absolute;
+  top:12px;
+  right:12px;
+  background:#fff;
+  padding:10px 12px;
+  border-radius:6px;
+  font:13px/1.35 Arial;
+  box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+
+#sw label{display:block;margin:6px 0}
+</style>
+</head>
+
+<body>
+
+<div id="header">
+  <h1>Seattle Map Tile Design</h1>
+  <p>
+    This interactive map presents four custom raster tile sets created in QGIS,
+    including a base map, swimming pool locations in Seattle, a combined map,
+    and a spring-themed cartographic design.
+  </p>
+</div>
+
+<div id="map"></div>
+
+<div id="sw">
+  <label><input type="radio" name="t" value="base" checked> Base map</label>
+  <label><input type="radio" name="t" value="pools"> Swimming pools in Seattle</label>
+  <label><input type="radio" name="t" value="combo"> Base map + swimming pools</label>
+  <label><input type="radio" name="t" value="spring"> Spring theme</label>
+</div>
+
+<script>
+mapboxgl.accessToken="pk.eyJ1IjoiYWxsZW55dWFuIiwiYSI6ImNtaGU0eGxpNzBhZmQyanEyY3pxZDFoM3oifQ.3KmK2WRpvAGKu9R2l2mHVA";
+
+const map=new mapboxgl.Map({
+  container:"map",
+  style:"mapbox://styles/mapbox/light-v11",
+  center:[-122.3321,47.6062],
+  zoom:10.5
+});
+
+map.addControl(new mapboxgl.NavigationControl(),"top-left");
+map.addControl(new mapboxgl.ScaleControl({maxWidth:100,unit:"metric"}));
+
+map.on("load",()=>{
+
+  const layers={
+    base:{id:"ts1",path:"assets/tileset1/{z}/{x}/{y}.png"},
+    pools:{id:"ts2",path:"assets/tileset2_swimming_pools/{z}/{x}/{y}.png"},
+    combo:{id:"ts3",path:"assets/tileset3/{z}/{x}/{y}.png"},
+    spring:{id:"ts4",path:"assets/tileset4_spring_theme/{z}/{x}/{y}.png"}
+  };
+
+  Object.keys(layers).forEach(k=>{
+    map.addSource(layers[k].id,{
+      type:"raster",
+      tiles:[layers[k].path],
+      tileSize:256
+    });
+    map.addLayer({
+      id:layers[k].id,
+      type:"raster",
+      source:layers[k].id,
+      layout:{visibility:k==="base"?"visible":"none"}
+    });
+  });
+
+  document.querySelectorAll('input[name="t"]').forEach(r=>{
+    r.addEventListener("change",e=>{
+      const v=e.target.value;
+      Object.keys(layers).forEach(k=>{
+        map.setLayoutProperty(
+          layers[k].id,
+          "visibility",
+          k===v?"visible":"none"
+        );
+      });
+    });
+  });
+
+});
+</script>
+
+</body>
+</html>
