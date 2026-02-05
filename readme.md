@@ -1,7 +1,7 @@
 # GEOG 458 Lab 4 – Custom Map Tile Generation and Web Mapping
 
-## 🌐 Web Map URL
- **https://[your_github_username].github.io/[your_repository_name]**
+## Web Map URL
+ **https://github.com/AllenVAL/Geog458TileSetPractice.git**
 
 ---
 
