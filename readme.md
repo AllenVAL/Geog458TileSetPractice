@@ -5,12 +5,6 @@
 
 ---
 
-##  Study Area
-The geographic focus of this project is **Seattle, Washington**, including the surrounding urban area.  
-All tile sets were exported with a limited spatial extent to reduce file size and improve performance on GitHub Pages.
-
----
-
 ## Project Overview
 This project demonstrates the creation of custom raster map tiles using **QGIS** and **QMetaTiles**, and the assembly of those tiles into an interactive **Mapbox GL JS** web map.
 
